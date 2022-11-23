@@ -2,10 +2,10 @@
   "name": "breddit-chat-be",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "NODE_ENV=development node server.js"
   },
   "repository": {
     "type": "git",
