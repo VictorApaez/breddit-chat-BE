@@ -7,7 +7,8 @@ const io = require("socket.io")(server, {
   },
 });
 
-server.listen("https://breddit-chat-be-production.up.railway.app/", () => {
+const PORT = "https://breddit-chat-be-production.up.railway.app/";
+server.listen(PORT, () => {
   console.log("server running");
 });
 
