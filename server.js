@@ -1,19 +1,39 @@
-import db from "./db/connection.js";
-import routes from "./routes/index.js";
-import express from "express";
-import cors from "cors";
-
+const express = require("express");
 const app = express();
+const server = require("http").createServer(app);
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "*",
+  },
+});
 
-app.use(cors());
-app.use(express.json());
-app.use(routes);
+server.listen(5000, () => {
+  console.log("server running");
+});
 
-const PORT = process.env.PORT;
+io.on("connection", (socket) => {
+  let userId = socket.handshake.query.id;
 
-db.on("connected", () => {
-  console.log("Connected to MongoDB!");
-  app.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}`);
+  console.log("user has connected: " + userId);
+  socket.join(userId);
+
+  socket.on("joinRooms", (rooms) => {
+    socket.join(rooms);
+  });
+
+  socket.on("createRoom", (data) => {
+    socket.join(data.rooms);
+    data.sendTo.forEach((userId) => {
+      let result = {
+        roomId: data.roomId,
+        userIds: data.sendTo,
+        messages: [],
+      };
+      io.in(userId).emit("joinRoom", result);
+    });
+  });
+
+  socket.on("sendMessage", (data) => {
+    io.in(data.roomId).emit("message", data);
   });
 });
