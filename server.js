@@ -9,7 +9,7 @@ const io = require("socket.io")(server, {
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log("server running");
+  console.log(`server running on ${PORT}`);
 });
 
 io.on("connection", (socket) => {
@@ -23,6 +23,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("createRoom", (data) => {
+    console.log(data);
     socket.join(data.rooms);
     data.sendTo.forEach((userId) => {
       let result = {
@@ -35,6 +36,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", (data) => {
+    console.log(data);
     io.in(data.roomId).emit("message", data);
   });
 });
